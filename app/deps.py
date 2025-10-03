@@ -1,6 +1,6 @@
 from fastapi import Depends
-import chromadb
 from chromadb.api import ClientAPI
+from chromadb.api.models.Collection import Collection
 from openai import OpenAI
 from .settings import Settings
 
@@ -9,7 +9,7 @@ class AppState:
     settings: Settings | None = None
     openai_client: OpenAI | None = None
     chroma_client: ClientAPI | None = None
-    collection = None
+    collection: Collection | None = None
 
 
 state = AppState()
