@@ -1,0 +1,27 @@
+# VCS
+.git
+.gitignore
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+
+#ruff cache
+.ruff_cache
+
+# Virtual envs and uv artifacts
+.venv/
+
+# Logs, env
+*.log
+.env
+.env.*
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/
