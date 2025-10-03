@@ -1,0 +1,16 @@
+[project]
+name = "searchct"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "chromadb>=1.1.0",
+    "dotenv>=0.9.9",
+    "fastapi[standard]>=0.118.0",
+    "openai>=2.1.0",
+    "pandas>=2.3.3",
+    "pydantic>=2.11.9",
+    "pydantic-settings>=2.11.0",
+    "ruff>=0.13.3",
+]
