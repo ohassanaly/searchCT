@@ -8,8 +8,10 @@ from openai import OpenAI
 from logging import Logger
 import pandas as pd
 
+
 class RephrasedQuery(BaseModel):
     queries: list[str]
+
 
 def rephrase_query(query: str, client) -> list[str]:
     """
@@ -30,7 +32,15 @@ def rephrase_query(query: str, client) -> list[str]:
     event = completion.choices[0].message.parsed
     return event.queries
 
-def query(user_query: str, collection, llm_client, logger: Logger, section_filtering:str ="", top_k: int = 2) -> dict:
+
+def query(
+    user_query: str,
+    collection,
+    llm_client,
+    logger: Logger,
+    section_filtering: str = "",
+    top_k: int = 2,
+) -> dict:
     """
     given a user query :
     rephrases it
@@ -38,45 +48,55 @@ def query(user_query: str, collection, llm_client, logger: Logger, section_filte
     returns : top-k results ids and distance for each query
     """
     rephrasing = rephrase_query(user_query, llm_client)
-    logger.info({"search query" : [user_query] + rephrasing})
+    logger.info({"search query": [user_query] + rephrasing})
 
     if section_filtering == "":
-          result = collection.query(
-          query_texts=[user_query] + rephrasing,
-          n_results=top_k,
-          include=["documents", "distances"],
-      )
-
-    else :
-        assert section_filtering in list(section_categories.keys()), "section_filetring should be a valid section"
         result = collection.query(
-        query_texts=[user_query] + rephrasing,
-        n_results=top_k,
-        include=["documents", "distances"],
-        where={"section": section_filtering} #eventually query several sections?
-      )
+            query_texts=[user_query] + rephrasing,
+            n_results=top_k,
+            include=["documents", "distances"],
+        )
+
+    else:
+        assert section_filtering in list(section_categories.keys()), (
+            "section_filetring should be a valid section"
+        )
+        result = collection.query(
+            query_texts=[user_query] + rephrasing,
+            n_results=top_k,
+            include=["documents", "distances"],
+            where={"section": section_filtering},  # eventually query several sections?
+        )
     return result
 
-def rank_query_result(result: dict, top_k :int=3) -> str:
+
+def rank_query_result(result: dict, top_k: int = 3) -> str:
     """
-    Input : result of the vector database query 
+    Input : result of the vector database query
     Output : JSON with results ids, distances and document content ranked by average distance to queries and keeping only top k results
     """
     results = []
-    for ids, dists, doc_texts in zip(result["ids"], result["distances"], result["documents"]):
+    for ids, dists, doc_texts in zip(
+        result["ids"], result["distances"], result["documents"]
+    ):
         for id_, dist, doc_text in zip(ids, dists, doc_texts):
             results.append((id_, dist, doc_text))
     df = pd.DataFrame(results, columns=["id", "distance", "doc_text"])
 
-    ranked_df = df.groupby(["id", "doc_text"])["distance"].mean().reset_index().sort_values(by="distance")
+    ranked_df = (
+        df.groupby(["id", "doc_text"])["distance"]
+        .mean()
+        .reset_index()
+        .sort_values(by="distance")
+    )
 
     output = ranked_df[:top_k].to_json(orient="records")
-    logger.info({"result" : output})
+    logger.info({"result": output})
 
     return output
 
-if __name__ == "__main__":
 
+if __name__ == "__main__":
     load_dotenv()
     llm_client = OpenAI()
     chroma_client = chromadb.CloudClient(

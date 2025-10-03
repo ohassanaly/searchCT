@@ -2,24 +2,24 @@ import logging
 import sys
 from pathlib import Path
 
-path = Path('.')
-log_path = path / "test.log" #dev mode ; in deployment, logs are expected in sys.stdout
+path = Path(".")
+log_path = (
+    path / "test.log"
+)  # dev mode ; in deployment, logs are expected in sys.stdout
 
-#get logger
+# get logger
 logger = logging.getLogger("searchct")
 logger.setLevel(logging.INFO)
 
-#create formater
-formatter = logging.Formatter(
-    fmt="%(asctime)s - %(levelname)s - %(message)s"
-    )
+# create formater
+formatter = logging.Formatter(fmt="%(asctime)s - %(levelname)s - %(message)s")
 
-#create handlers
+# create handlers
 stream_handler = logging.StreamHandler(sys.stdout)
 stderr_handler = logging.StreamHandler(sys.stderr)
 file_handler = logging.FileHandler(log_path)
 
-#set formatters
+# set formatters
 stream_handler.setFormatter(formatter)
 stderr_handler.setFormatter(formatter)
 file_handler.setFormatter(formatter)
@@ -28,7 +28,5 @@ file_handler.setFormatter(formatter)
 stream_handler.addFilter(lambda record: record.levelno < logging.ERROR)
 stderr_handler.addFilter(lambda record: record.levelno >= logging.ERROR)
 
-#add handlers to the logger
+# add handlers to the logger
 logger.handlers = [stream_handler, stderr_handler, file_handler]
-
-
