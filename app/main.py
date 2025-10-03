@@ -1,28 +1,45 @@
-from .query_vector_db import *
-from .logger import logger
-from .middleware import log_middleware
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from starlette.middleware.base import BaseHTTPMiddleware
+import chromadb
+from openai import OpenAI
 
-app = FastAPI()
-app.add_middleware(BaseHTTPMiddleware, dispatch=log_middleware)
-
-load_dotenv()
-llm_client = OpenAI()
-chroma_client = chromadb.CloudClient(
-    api_key=os.getenv("chromadb_api_key"),
-    tenant=os.getenv("chroma_tenant"),
-    database="rct_rag",
-)
-collection = chroma_client.get_collection(name="rct_sections")
+from .api import router
+from .deps import state
+from .settings import Settings
+from .middleware import log_middleware
+from .logger import logger
 
 
-@app.get("/")
-def welcome_page():
-    return "Welcome to the searchCT API"
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    settings = Settings()
+    state.settings = settings
+
+    state.openai_client = (
+        OpenAI(api_key=settings.openai_api_key) if settings.openai_api_key else OpenAI()
+    )
+    state.chroma_client = chromadb.CloudClient(
+        api_key=settings.chromadb_api_key,
+        tenant=settings.chroma_tenant,
+        database=settings.chroma_database,
+    )
+    state.collection = state.chroma_client.get_collection(
+        name=settings.chroma_collection
+    )
+    logger.info("searchCT startup complete")
+    try:
+        yield
+    finally:
+        logger.info("searchCT shutting down")
 
 
-@app.post("/search/")
-async def search_engine(user_input: str):
-    result = query(user_input, collection, llm_client, logger, "INCLUSION CRITERIA")
-    return rank_query_result(result)
+def create_app() -> FastAPI:
+    app = FastAPI(title="searchCT", lifespan=lifespan)
+    app.add_middleware(BaseHTTPMiddleware, dispatch=log_middleware)
+    app.include_router(router)
+    return app
+
+
+# ASGI entrypoint
+app = create_app()
