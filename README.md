@@ -1,1 +1,1 @@
-TODO implement pytest testing and linting workflow
+pytest testing must be implemented
