@@ -10,6 +10,7 @@ dependencies = [
     "fastapi[standard]>=0.118.0",
     "openai>=2.1.0",
     "pandas>=2.3.3",
+    "pre-commit>=4.3.0",
     "pydantic>=2.11.9",
     "pydantic-settings>=2.11.0",
     "ruff>=0.13.3",
