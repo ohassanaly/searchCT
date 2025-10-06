@@ -1,5 +1,5 @@
 [project]
-name = "searchct"
+name = "app"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -8,10 +8,15 @@ dependencies = [
     "chromadb>=1.1.0",
     "dotenv>=0.9.9",
     "fastapi[standard]>=0.118.0",
+    "httpx>=0.28.1",
     "openai>=2.1.0",
     "pandas>=2.3.3",
     "pre-commit>=4.3.0",
     "pydantic>=2.11.9",
     "pydantic-settings>=2.11.0",
+    "pytest>=8.4.2",
     "ruff>=0.13.3",
 ]
+
+[tool.setuptools]
+packages = ["app"]
