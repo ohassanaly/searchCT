@@ -7,7 +7,7 @@ router = APIRouter()
 
 class SearchRequest(BaseModel):
     user_input: str
-    criteria: str | None = "INCLUSION CRITERIA"
+    criteria: list[str] = []
 
 
 @router.get("/", tags=["meta"])
@@ -31,6 +31,6 @@ async def search_engine(
         collection,
         llm_client,
         logger,
-        payload.criteria or "INCLUSION CRITERIA",
+        payload.criteria or [],
     )
     return rank_query_result(result)
