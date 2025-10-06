@@ -19,7 +19,7 @@ def rephrase_query(query: str, client) -> list[str]:
     Typing is ensured by Pdyantic
     """
     completion = client.chat.completions.parse(
-        model= rephrasing_model,
+        model=rephrasing_model,
         messages=[
             {
                 "role": "system",
@@ -38,7 +38,7 @@ def query(
     collection,
     llm_client,
     logger: Logger,
-    section_filtering: list[str] =[],
+    section_filtering: list[str] = [],
     top_k: int = 2,
 ) -> dict:
     """
@@ -58,17 +58,14 @@ def query(
         )
 
     else:
-        assert [section in list(section_categories.keys()) for section in section_filtering], (
-            "section_filetring should be a valid section"
-        )
+        assert [
+            section in list(section_categories.keys()) for section in section_filtering
+        ], "section_filetring should be a valid section"
         result = collection.query(
             query_texts=[user_query] + rephrasing,
             n_results=top_k,
             include=["documents", "distances"],
-            where={"section": {
-            "$in" : section_filtering
-            }
-        },
+            where={"section": {"$in": section_filtering}},
         )
     return result
 
@@ -110,5 +107,11 @@ if __name__ == "__main__":
     collection = chroma_client.get_collection(name="rct_sections")
 
     user_query = "dose finding clinical trial"
-    result = query(user_query, collection, llm_client, logger, ["INCLUSION CRITERIA", "JUSTIFICATION"])
+    result = query(
+        user_query,
+        collection,
+        llm_client,
+        logger,
+        ["INCLUSION CRITERIA", "JUSTIFICATION"],
+    )
     print(rank_query_result(result))
