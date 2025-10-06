@@ -107,3 +107,5 @@ section_categories = {
         "sample size",
     ],
 }
+
+rephrasing_model = "gpt-4o-2024-08-06"
