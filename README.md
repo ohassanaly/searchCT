@@ -1,6 +1,7 @@
-testing of env variables and of the api must be implemented
+fastAPI endpoint for the searchCT (search Clinical Trials) search engine
 
-later upgrades include :
-manage authentication
-connect API to a react front end using CORS https://fastapi.tiangolo.com/tutorial/cors/
-implement rate limiting
+post requests @ search/
+
+with query parameters :
+"user_input" (the search engine query, natural text) ; example : "dose-finding in double-blind cryoglobulinemia vasculitis trial" ;
+"criteria" [optional] a list of sections among ['TITLE', 'JUSTIFICATION', 'OBJECTIVE', 'DESIGN', 'INCLUSION CRITERIA', 'EXCLUSION CRITERIA', 'INTERVENTION', 'STATISTICS'] to focus on for the search ;
