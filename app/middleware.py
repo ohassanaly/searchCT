@@ -1,6 +1,5 @@
 from .logger import logger
 from fastapi import Request
-from fastapi.responses import Response
 import time
 
 

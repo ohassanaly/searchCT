@@ -3,7 +3,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     # OpenAI
-    openai_api_key: str | None = None
+    openai_api_key: str
 
     # Chroma
     chromadb_api_key: str

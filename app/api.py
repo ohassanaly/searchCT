@@ -7,7 +7,7 @@ router = APIRouter()
 
 class SearchRequest(BaseModel):
     user_input: str
-    criteria: list[str] = []
+    criteria: list[str] | None = None
 
 
 @router.get("/", tags=["meta"])
@@ -22,8 +22,6 @@ async def search_engine(
     llm_client=Depends(get_openai_client),
 ):
     from .logger import logger
-
-    # reuse your existing helpers
     from .query_vector_db import query, rank_query_result
 
     result = query(

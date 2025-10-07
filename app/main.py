@@ -41,5 +41,4 @@ def create_app() -> FastAPI:
     return app
 
 
-# ASGI entrypoint
 app = create_app()
