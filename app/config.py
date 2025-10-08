@@ -109,10 +109,3 @@ section_categories = {
 }
 
 rephrasing_model = "gpt-4o-2024-08-06"
-
-dev_origins = [
-    "http://localhost:8000",  # localhost backend only
-    "http://127.0.0.1:8000",
-    "http://localhost:5173",  # frontend dev server
-    "http://127.0.0.1:5173/",
-]
