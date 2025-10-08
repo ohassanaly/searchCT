@@ -10,7 +10,7 @@ from .deps import state
 from .settings import Settings
 from .middleware import log_middleware
 from .logger import logger
-from .config import dev_origins
+# from .config import dev_origins
 
 
 @asynccontextmanager
@@ -40,7 +40,8 @@ def create_app() -> FastAPI:
     app = FastAPI(title="searchCT", lifespan=lifespan)
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=dev_origins,
+        # allow_origins=dev_origins,
+        allow_origins=["*"],
         allow_methods=["*"],
         allow_headers=["*"],
     )
