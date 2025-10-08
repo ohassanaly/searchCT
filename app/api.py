@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from .deps import get_collection, get_openai_client
+import json
 
 router = APIRouter()
 
@@ -31,4 +32,4 @@ async def search_engine(
         logger,
         payload.criteria or [],
     )
-    return rank_query_result(result)
+    return json.loads(rank_query_result(result))

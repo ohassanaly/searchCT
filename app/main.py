@@ -3,12 +3,14 @@ from fastapi import FastAPI
 from starlette.middleware.base import BaseHTTPMiddleware
 import chromadb
 from openai import OpenAI
+from fastapi.middleware.cors import CORSMiddleware
 
 from .api import router
 from .deps import state
 from .settings import Settings
 from .middleware import log_middleware
 from .logger import logger
+from .config import dev_origins
 
 
 @asynccontextmanager
@@ -36,6 +38,12 @@ async def lifespan(app: FastAPI):
 
 def create_app() -> FastAPI:
     app = FastAPI(title="searchCT", lifespan=lifespan)
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=dev_origins,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
     app.add_middleware(BaseHTTPMiddleware, dispatch=log_middleware)
     app.include_router(router)
     return app
